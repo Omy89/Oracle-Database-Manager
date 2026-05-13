@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    display: flex; /* Pone los hijos lado a lado, por eso el flex*/
+    background-color: #1e2124;
+    flex: 1;
+}
+
+.sidebar {
+    flex-direction: column;
+    width: 250px;
+    background-color: #36393e;
+    height: 100vh;
+    display: flex;
+}
+
+.connection-list{
+    flex-direction: column;
+    width: 250px;
+    height: 100vh;
+    background-color: #282b30;
+    display: flex;
+}
+
+.sidebar-header{
+    flex-direction: column;
+    width: 250px;
+    background-color: #282b30;
+    color: white;
+}
+
+.main{
+    display: flex;
+    flex: 1;
+}
+
+#main-placeholder{
+    color: white;
+}

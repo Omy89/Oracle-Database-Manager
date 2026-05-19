@@ -10,7 +10,11 @@
 
 
         add_connection.addEventListener('click', () => {
-            console.log('clicked');
+            show_add_connection_form();
+        })
+
+        //helpers
+        function show_add_connection_form() {
             main_content.innerHTML = `
             <div class="connection-form">
                 <h2>Nueva Conexión</h2>
@@ -42,5 +46,30 @@
                 
                 <button id="btn-connect">Conectar</button>
             </div>`;
-        })
+
+            const connect  = document.getElementById('btn-connect');
+            connect .addEventListener('click', async () => {
+                const host = document.getElementById('host').value;
+                const port = document.getElementById('port').value;
+                const service = document.getElementById('service').value;
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+
+                console.log(host, port, service, username, password);
+
+                const response = await fetch('/api/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: username, password, host, port, service })
+                });
+
+                const data = await response.json();
+                console.log(data);
+            });
+        }
+
+
+
+
+        //ultimo coso, everything dentro de aca
     })

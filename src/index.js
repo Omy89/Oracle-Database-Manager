@@ -1,8 +1,12 @@
+//librerias
 const { getConnection } = require('./db/connection');
 const express = require('express');
 const cors = require('cors');
+
+
 require('dotenv').config();
 
+//instance express
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -30,3 +34,5 @@ app.post('/api/connect', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
+
+//todo hacer aprender localStorage para guardar sesiones anteriores.

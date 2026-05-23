@@ -7,7 +7,7 @@
         //main-content
         const main_content = document.getElementById('main-content');
 
-
+        document.querySelector('.main').classList.add('empty');
 
         add_connection.addEventListener('click', () => {
             show_add_connection_form();
@@ -97,6 +97,7 @@
 
             const cancel  = document.getElementById('btn-cancel');
             cancel.addEventListener('click', async () => {
+                document.querySelector('.main').classList.add('empty');
                 main_content.innerHTML = '';
                 document.getElementById('main-placeholder').style.display = 'block';
                 console.log("Click al boton canceled");
@@ -164,21 +165,51 @@
                 });
             }
 
-            setup_toggle('details-tables',     'Tables',     data.tables,     ['TABLE_NAME', 'OWNER', 'TABLESPACE_NAME']);
-            setup_toggle('details-views',      'Views',      data.views,      ['VIEW_NAME', 'OWNER']);
-            setup_toggle('details-procedures', 'Procedures', data.procedures, ['OBJECT_NAME', 'OWNER']);
-            setup_toggle('details-functions',  'Functions',  data.functions,  ['OBJECT_NAME', 'OWNER']);
-            setup_toggle('details-packages',   'Packages',   data.packages,   ['OBJECT_NAME', 'OWNER']);
-            setup_toggle('details-sequences',  'Sequences',  data.sequences,  ['SEQUENCE_NAME', 'OWNER']);
-            setup_toggle('details-triggers',   'Triggers',   data.triggers,   ['TRIGGER_NAME', 'OWNER', 'TABLE_NAME']);
-            setup_toggle('details-indexes',    'Indexes',    data.indexes,    ['INDEX_NAME', 'OWNER', 'TABLE_NAME']);
-            setup_toggle('details-tablespaces','Tablespaces',data.tablespaces,['TABLESPACE_NAME', 'STATUS']);
-            setup_toggle('details-users',      'Users',      data.users,      ['USERNAME', 'ACCOUNT_STATUS']);
+            function show_objects(type, rows, columns) {
+                // limpiar el main y quitar el centrado para que la tabla ocupe todo
+                document.querySelector('.main').classList.remove('empty');
+                main_content.innerHTML = `
+                        <div class="table-container">
+                            <h2 class="table-title">${type}</h2>
+                            <table id="data-table" class="display" style="width:100%"></table>
+                        </div>
+                    `;
 
+                   // inicializar DataTables con los datos
+                new DataTable('#data-table', {
+                    data: rows,
+                    columns: columns.map(col => ({ title: col, data: col })),
+                    pageLength: 25,
+                    language: {
+                        search: 'Buscar:',
+                        lengthMenu: 'Mostrar _MENU_ registros',
+                        info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
+                        paginate: {
+                            first: 'Primero',
+                            last: 'Último',
+                            next: 'Siguiente',
+                            previous: 'Anterior'
+                        }
+                    }
+                });
+            }
+
+            setup_toggle('details-tables',      'Tables',      data.tables,      ['TABLE_NAME', 'OWNER', 'TABLESPACE_NAME']);
+            setup_toggle('details-views',       'Views',       data.views,       ['VIEW_NAME', 'OWNER']);
+            setup_toggle('details-procedures',  'Procedures',  data.procedures,  ['OBJECT_NAME', 'OWNER']);
+            setup_toggle('details-functions',   'Functions',   data.functions,   ['OBJECT_NAME', 'OWNER']);
+            setup_toggle('details-packages',    'Packages',    data.packages,    ['OBJECT_NAME', 'OWNER']);
+            setup_toggle('details-sequences',   'Sequences',   data.sequences,   ['SEQUENCE_NAME', 'OWNER']);
+            setup_toggle('details-triggers',    'Triggers',    data.triggers,    ['TRIGGER_NAME', 'OWNER', 'TABLE_NAME']);
+            setup_toggle('details-indexes',     'Indexes',     data.indexes,     ['INDEX_NAME', 'OWNER', 'TABLE_NAME']);
+            setup_toggle('details-tablespaces', 'Tablespaces', data.tablespaces, ['TABLESPACE_NAME', 'STATUS']);
+            setup_toggle('details-users',       'Users',       data.users,       ['USERNAME', 'ACCOUNT_STATUS', 'DEFAULT_TABLESPACE']);
 
 
 
         }
+
+
 
         //ultimo coso, everything dentro de aca
     })

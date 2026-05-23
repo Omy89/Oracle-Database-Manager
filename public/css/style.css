@@ -62,7 +62,11 @@ body {
 .main {
     display: flex;
     flex: 1;
-    /*Aca puse pues que se centre maziso en el main */
+    overflow: auto;
+}
+
+/* solo centra cuando no hay tabla */
+.main.empty {
     align-items: center;
     justify-content: center;
 }
@@ -161,4 +165,16 @@ body {
 
 #connection-list details details {
     margin-left: 20px;
+}
+
+.table-container {
+    padding: 24px;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table-title {
+    color: white;
+    margin-bottom: 16px;
+    font-size: 18px;
 }

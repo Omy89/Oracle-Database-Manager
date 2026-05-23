@@ -158,3 +158,7 @@ body {
     background-color: #4f545c;
     color: white;
 }
+
+#connection-list details details {
+    margin-left: 20px;
+}

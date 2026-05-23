@@ -50,8 +50,11 @@ app.post('/api/objects', async (req, res) => {
         // con esto:  rows: [{ TABLE_NAME: 'EMPLOYEES', OWNER: 'HR' }]
         const opts = { outFormat: oracledb.OUT_FORMAT_OBJECT };
 
-        const [tables, views, procedures, functions, packages,
-            sequences, triggers, indexes, tablespaces, users] = await Promise.all([
+        const [tables, views, procedures,
+            functions, packages,
+            sequences, triggers, indexes,
+            tablespaces, users]
+            = await Promise.all([
 
             conn.execute(`SELECT TABLE_NAME, OWNER, TABLESPACE_NAME 
                          FROM ALL_TABLES 

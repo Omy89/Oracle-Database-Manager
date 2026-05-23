@@ -15,6 +15,7 @@
 
         //helpers
         function show_add_connection_form() {
+            document.querySelector('.main').classList.add('empty');
             document.getElementById('main-placeholder').style.display = 'none';
             main_content.innerHTML = `
             <div class="connection-form">
@@ -86,6 +87,22 @@
                     const objData = await objResponse.json();
 
                     if (objData.success) {
+                        main_content.innerHTML = '';
+
+                        const connection = { host, port, service, username, password };
+                        const connections = JSON.parse(localStorage.getItem('connections') || '[]');
+
+                        const exists = connections.find(c =>
+                            c.host === host && c.service === service && c.username === username
+                        );
+
+                        if (!exists) {
+                            connections.push(connection);
+                            localStorage.setItem('connections', JSON.stringify(connections));
+                        }
+
+                        document.getElementById('main-placeholder').style.display = 'none';
+                        document.querySelector('.main').classList.remove('empty');
                         render_sidebar(host, username, objData.data);
                     }
                 } else {
@@ -179,17 +196,12 @@
                 new DataTable('#data-table', {
                     data: rows,
                     columns: columns.map(col => ({ title: col, data: col })),
-                    pageLength: 25,
+                    pageLength: 20,
+                    pagingType: 'simple_numbers',
+                    dom: 'frtip', // quita el selector de cantidad (l)
                     language: {
                         search: 'Buscar:',
-                        lengthMenu: 'Mostrar _MENU_ registros',
                         info: 'Mostrando _START_ a _END_ de _TOTAL_ registros',
-                        paginate: {
-                            first: 'Primero',
-                            last: 'Último',
-                            next: 'Siguiente',
-                            previous: 'Anterior'
-                        }
                     }
                 });
             }
@@ -208,6 +220,44 @@
 
 
         }
+
+        function load_saved_connections() {
+            const connections = JSON.parse(localStorage.getItem('connections') || '[]');
+            if (connections.length === 0) {
+                connection_list.innerHTML = '<span style="padding:12px;color:#b9bbbe;font-size:12px;">No hay conexiones guardadas</span>';
+                return;
+            }
+
+            connection_list.innerHTML = connections.map((c, i) => `
+        <div class="saved-connection" data-index="${i}">
+            📁 ${c.host} (${c.username})
+        </div>
+    `).join('');
+
+            // clic en cada conexión guardada
+            document.querySelectorAll('.saved-connection').forEach(el => {
+                el.addEventListener('click', async () => {
+                    const i = el.dataset.index;
+                    const c = connections[i];
+
+                    const objResponse = await fetch('/api/objects', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user: c.username, password: c.password, host: c.host, port: c.port, service: c.service })
+                    });
+                    const objData = await objResponse.json();
+
+                    if (objData.success) {
+                        main_content.innerHTML = '';
+                        document.getElementById('main-placeholder').style.display = 'none';
+                        document.querySelector('.main').classList.remove('empty');
+                        render_sidebar(c.host, c.username, objData.data);
+                    }
+                });
+            });
+        }
+
+        load_saved_connections();
 
 
 

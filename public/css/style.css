@@ -49,6 +49,7 @@ body {
     border: none;
     color: #b9bbbe;
     font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
     padding: 2px 6px;
     border-radius: 4px;
@@ -87,6 +88,7 @@ body {
 .connection-form h2 {
     color: white;
     margin-bottom: 24px;
+    font-weight: 600;
     font-size: 18px;
 }
 
@@ -131,6 +133,16 @@ body {
     margin-top: 8px;
 }
 
+.table-container {
+    padding: 24px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+}
+
+#data-table {
+    width: 100% !important;
+}
 
 #btn-connect:hover {
     background-color: #cc0000;
@@ -177,4 +189,68 @@ body {
     color: white;
     margin-bottom: 16px;
     font-size: 18px;
+}
+
+.dataTables_wrapper {
+    color: #b9bbbe;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    background-color: #40444b;
+    border: 1px solid #202225;
+    color: white;
+    border-radius: 4px;
+    padding: 4px 8px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    background-color: #40444b;
+    border: 1px solid #202225;
+    color: white;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+table.dataTable thead th {
+    background-color: #2f3136;
+    color: #b9bbbe;
+    border-bottom: 2px solid #F80000;
+}
+
+table.dataTable tbody tr {
+    background-color: #36393e;
+    color: white;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #40444b;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: #b9bbbe !important;
+    border-radius: 4px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #F80000 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: #40444b !important;
+    color: white !important;
+}
+
+.saved-connection {
+    padding: 10px 16px;
+    color: #b9bbbe;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.saved-connection:hover {
+    background-color: #40444b;
+    color: white;
 }

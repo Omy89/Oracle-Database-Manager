@@ -6,7 +6,7 @@ body {
 }
 
 .container {
-    display: flex; /* Pone los hijos lado a lado, por eso el flex*/
+    display: flex;
     background-color: #1e2124;
     flex: 1;
     color: white;
@@ -29,8 +29,6 @@ body {
     color: white;
 }
 
-
-/* el sidebar-header tmb fue mejorado*/
 .sidebar-header {
     display: flex;
     justify-content: space-between;
@@ -66,7 +64,6 @@ body {
     overflow: auto;
 }
 
-/* solo centra cuando no hay tabla */
 .main.empty {
     align-items: center;
     justify-content: center;
@@ -75,7 +72,6 @@ body {
 #main-placeholder{
     color: white;
 }
-/* apoyo de design mas atractivo, porque si no se miraba bien 1990*/
 
 .connection-form {
     background-color: #2f3136;
@@ -253,4 +249,640 @@ table.dataTable tbody tr:hover {
 .saved-connection:hover {
     background-color: #40444b;
     color: white;
+}
+
+/* ─── SQL EDITOR ─────────────────────────────────────────────────────────── */
+
+/* Botón SQL en el sidebar-header */
+#btn-sql-editor {
+    background: none;
+    border: none;
+    color: #b9bbbe;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: calc(100% - 32px);
+    margin: 8px 16px 0;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#btn-sql-editor:hover {
+    background-color: #40444b;
+    color: white;
+}
+
+#btn-sql-editor.active {
+    background-color: #F80000;
+    color: white;
+}
+
+/* Contenedor principal del editor */
+.sql-editor-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+    box-sizing: border-box;
+    gap: 16px;
+    overflow: hidden;
+}
+
+.sql-editor-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+}
+
+.sql-editor-header h2 {
+    color: white;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sql-toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* Área de texto del editor */
+.sql-textarea-wrapper {
+    position: relative;
+    flex-shrink: 0;
+}
+
+#sql-input {
+    width: 100%;
+    height: 200px;
+    background-color: #1a1d21;
+    border: 1px solid #40444b;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+    tab-size: 4;
+    transition: border-color 0.2s;
+}
+
+#sql-input:focus {
+    border-color: #F80000;
+}
+
+#sql-input::placeholder {
+    color: #4f545c;
+}
+
+/* Botones del toolbar */
+.sql-btn {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, opacity 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sql-btn-run {
+    background-color: #F80000;
+    color: white;
+}
+
+.sql-btn-run:hover {
+    background-color: #cc0000;
+}
+
+.sql-btn-run:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sql-btn-clear {
+    background-color: #40444b;
+    color: #b9bbbe;
+}
+
+.sql-btn-clear:hover {
+    background-color: #4f545c;
+    color: white;
+}
+
+/* Shortcut hint */
+.sql-shortcut-hint {
+    color: #4f545c;
+    font-size: 11px;
+    margin-left: 4px;
+}
+
+/* Área de resultados */
+.sql-results-area {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 0;
+}
+
+/* Bloque de un resultado individual */
+.sql-result-block {
+    background-color: #2f3136;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #40444b;
+    animation: fadeInUp 0.2s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.sql-result-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background-color: #36393e;
+    border-bottom: 1px solid #40444b;
+    font-size: 12px;
+    gap: 8px;
+}
+
+.sql-result-stmt {
+    color: #72767d;
+    font-family: 'Consolas', monospace;
+    font-size: 11px;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sql-result-badge {
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    flex-shrink: 0;
+}
+
+.badge-select {
+    background-color: #1a3a5c;
+    color: #5dade2;
+}
+
+.badge-ddl {
+    background-color: #1a3d2b;
+    color: #58d68d;
+}
+
+.badge-error {
+    background-color: #4a1a1a;
+    color: #e74c3c;
+}
+
+.sql-result-body {
+    padding: 12px 16px;
+}
+
+/* Mensaje de éxito DDL */
+.sql-success-msg {
+    color: #58d68d;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Mensaje de error */
+.sql-error-msg {
+    color: #e74c3c;
+    font-size: 13px;
+    font-family: 'Consolas', monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    padding: 8px;
+    background-color: #2a1515;
+    border-radius: 4px;
+}
+
+/* Estado vacío / sin conexión */
+.sql-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #4f545c;
+    flex: 1;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.sql-empty-state .icon {
+    font-size: 36px;
+    opacity: 0.4;
+}
+
+/* Spinner de carga */
+.sql-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Tabla de resultados SELECT dentro del editor */
+.sql-results-area .dataTables_wrapper {
+    padding: 0;
+}
+
+.sql-results-area table.dataTable thead th {
+    background-color: #1e2124;
+    font-size: 12px;
+    padding: 8px 10px;
+}
+
+.sql-results-area table.dataTable tbody tr {
+    background-color: #2f3136;
+}
+
+.sql-results-area table.dataTable tbody td {
+    font-size: 13px;
+    padding: 7px 10px;
+    font-family: 'Consolas', monospace;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sql-results-area .dataTables_filter input {
+    font-size: 12px;
+}
+
+/* Row count info */
+.sql-row-count {
+    color: #72767d;
+    font-size: 12px;
+    padding: 6px 0 0;
+}
+
+/* ─── BOTONES DE ACCIÓN DEL SIDEBAR ─────────────────────────────────────── */
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 10px;
+    border-top: 1px solid #40444b;
+    margin-top: auto;
+}
+
+.sidebar-action-btn {
+    background: none;
+    border: 1px solid #40444b;
+    color: #b9bbbe;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 7px 10px;
+    border-radius: 4px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.sidebar-action-btn:hover {
+    background-color: #40444b;
+    color: white;
+    border-color: #5d6269;
+}
+
+#btn-sql-editor:hover {
+    border-color: #F80000;
+    color: #F80000;
+}
+
+/* ─── BOTÓN DDL EN DATATABLES ────────────────────────────────────────────── */
+.btn-ddl {
+    background-color: #2f3136;
+    border: 1px solid #40444b;
+    color: #b9bbbe;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.15s;
+}
+
+.btn-ddl:hover {
+    background-color: #F80000;
+    color: white;
+    border-color: #F80000;
+}
+
+/* ─── MODAL DDL ──────────────────────────────────────────────────────────── */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.modal-box {
+    background: #2f3136;
+    border: 1px solid #40444b;
+    border-radius: 8px;
+    width: 760px;
+    max-width: 95vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.18s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #40444b;
+    flex-shrink: 0;
+}
+
+.modal-title {
+    color: #b9bbbe;
+    font-size: 14px;
+}
+
+.modal-title strong {
+    color: white;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: #72767d;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.modal-close:hover {
+    background: #40444b;
+    color: white;
+}
+
+.modal-body {
+    flex: 1;
+    overflow: auto;
+    padding: 20px;
+}
+
+.ddl-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #b9bbbe;
+    font-size: 13px;
+}
+
+.ddl-textarea {
+    width: 100%;
+    height: 380px;
+    background: #1a1d21;
+    border: 1px solid #40444b;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-family: 'Consolas','Monaco','Courier New',monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 14px 16px;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 14px 20px;
+    border-top: 1px solid #40444b;
+    flex-shrink: 0;
+}
+
+/* ─── FORMULARIOS DE CREACIÓN ────────────────────────────────────────────── */
+.create-form-container {
+    padding: 28px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.create-form-container .form-group input[type="text"],
+.create-form-container .form-group input[type="password"] {
+    max-width: 360px;
+}
+
+.col-table-wrapper {
+    overflow-x: auto;
+    margin: 16px 0;
+    border: 1px solid #40444b;
+    border-radius: 6px;
+}
+
+.col-def-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.col-def-table thead th {
+    background: #1e2124;
+    color: #b9bbbe;
+    padding: 10px 10px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    border-bottom: 2px solid #F80000;
+}
+
+.col-def-table tbody tr {
+    border-bottom: 1px solid #40444b;
+}
+
+.col-def-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.col-def-table tbody td {
+    padding: 8px 10px;
+    background: #2f3136;
+    vertical-align: middle;
+}
+
+.col-def-table tbody td input[type="text"],
+.col-def-table tbody td select {
+    background: #1a1d21;
+    border: 1px solid #40444b;
+    border-radius: 4px;
+    color: white;
+    padding: 5px 7px;
+    font-size: 12px;
+    outline: none;
+}
+
+.col-def-table tbody td input[type="text"]:focus,
+.col-def-table tbody td select:focus {
+    border-color: #F80000;
+}
+
+.col-def-table tbody td input[type="checkbox"] {
+    accent-color: #F80000;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.btn-remove-col {
+    background: none;
+    border: none;
+    color: #72767d;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.btn-remove-col:hover {
+    background: #4a1a1a;
+    color: #e74c3c;
+}
+
+.create-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    gap: 8px;
+}
+
+/* Textarea de SELECT para vistas */
+.view-select-area {
+    width: 100%;
+    max-width: 700px;
+    height: 180px;
+    background: #1a1d21;
+    border: 1px solid #40444b;
+    border-radius: 6px;
+    color: #e8e8e8;
+    font-family: 'Consolas','Monaco','Courier New',monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    resize: vertical;
+    outline: none;
+}
+
+.view-select-area:focus {
+    border-color: #F80000;
+}
+
+/* Caja de preview SQL */
+.preview-box {
+    background: #1a1d21;
+    border: 1px solid #40444b;
+    border-radius: 6px;
+    color: #58d68d;
+    font-family: 'Consolas','Monaco','Courier New',monospace;
+    font-size: 12px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+/* ─── TREE SIDEBAR ───────────────────────────────────────────────────────── */
+/* BD raiz */
+.summary-db {
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 4px 0;
+    cursor: pointer;
+}
+
+/* Carpetas (Tables, Views, etc) */
+.summary-folder {
+    color: #b9bbbe;
+    font-size: 12px;
+    padding: 3px 0;
+    cursor: pointer;
+}
+
+.summary-folder:hover {
+    color: white;
+}
+
+/* quitar el estilo por defecto de details/summary dentro del connection-list */
+#connection-list details {
+    margin-left: 12px;
+}
+
+#connection-list > details {
+    margin-left: 0;
 }

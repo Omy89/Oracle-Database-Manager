@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Oracle DB Manager funcionando');
 });
 
-// ─── CONEXION ────────────────────────────────────────────────────────────────
+
 app.post('/api/connect', async (req, res) => {
     const { user, password, host, port, service } = req.body;
     let conn;
@@ -32,7 +32,7 @@ app.post('/api/connect', async (req, res) => {
     }
 });
 
-// ─── OBJETOS ─────────────────────────────────────────────────────────────────
+
 app.post('/api/objects', async (req, res) => {
     const { user, password, host, port, service } = req.body;
     let conn;
@@ -200,9 +200,6 @@ app.post('/api/ddl', async (req, res) => {
                     long_opts(['DATA_DEFAULT'])
                 );
 
-                // SEARCH_CONDITION es LONG y Oracle no permite LONG en GROUP BY.
-                // Se separa en dos queries: una para P/U/R (que necesitan LISTAGG),
-                // y otra solo para CHECK (sin agrupar, para poder leer el LONG).
                 const cons = await conn.execute(
                     `SELECT ac.CONSTRAINT_NAME, ac.CONSTRAINT_TYPE,
                             ac.R_OWNER, ac.R_CONSTRAINT_NAME,
@@ -260,7 +257,6 @@ app.post('/api/ddl', async (req, res) => {
             }
 
             case 'VIEW': {
-                // TEXT en ALL_VIEWS es LONG — usar fetchTypeHandler
                 const result = await conn.execute(
                     `SELECT TEXT FROM ALL_VIEWS WHERE VIEW_NAME = :name AND OWNER = :owner`,
                     { name, owner },
@@ -275,7 +271,6 @@ app.post('/api/ddl', async (req, res) => {
             case 'FUNCTION':
             case 'PACKAGE':
             case 'PACKAGE BODY': {
-                // ALL_SOURCE.TEXT es VARCHAR2 (no LONG), no necesita fetchTypeHandler
                 const result = await conn.execute(
                     `SELECT TEXT FROM ALL_SOURCE
                      WHERE NAME = :name AND OWNER = :owner AND TYPE = :type

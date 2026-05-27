@@ -1,149 +1,450 @@
 # Oracle Database Manager
 
-Herramienta administrativa para Oracle Database desarrollada en Node.js y JavaScript.
+Herramienta administrativa para Oracle Database desarrollada en JavaScript utilizando Node.js y Express.js.
 
-## Descripcion
+---
 
-Oracle Database Manager es una aplicacion web para la administracion de bases de datos Oracle,
-interactuando directamente con las system tables del SGBD mediante consultas SQL nativas.
+# Descripción
 
-Desarrollado para la clase de Teoria de Base de Datos II.
+Oracle Database Manager es una aplicación web para la administración de bases de datos Oracle, interactuando directamente con las *system tables/views* del SGBD mediante consultas SQL nativas.
 
-## Caracteristicas
+El proyecto fue desarrollado para la clase de Teoría de Base de Datos II, cumpliendo el requisito de utilizar metadata obtenida directamente desde Oracle, sin utilizar `information_schema` ni librerías ORM o frameworks de administración externos.
 
-- Gestion de conexiones Oracle con soporte para multiples instancias
-- Explorador de objetos de base de datos con tree navegable
-- Ejecucion de consultas SQL (SELECT, DDL, DML)
-- Generacion de DDL desde metadata via system tables
-- Creacion visual de tablas y vistas
-- Administracion de:
-  - Tablas
-  - Vistas
-  - Procedimientos almacenados
-  - Funciones
-  - Paquetes
-  - Secuencias
-  - Triggers
-  - Indices
-  - Tablespaces
-  - Usuarios
+La aplicación permite:
 
-## Tecnologias utilizadas
+- Gestión de múltiples conexiones Oracle
+- Exploración visual de objetos de base de datos
+- Ejecución de sentencias SQL
+- Generación manual de DDL desde metadata
+- Creación visual de tablas y vistas
+- Administración de objetos Oracle desde una interfaz web
+
+---
+
+# Características
+
+## Gestión de conexiones
+
+- Inicio de sesión con cualquier usuario válido de Oracle
+- Soporte para múltiples conexiones simultáneas
+- Persistencia de conexiones utilizando `localStorage`
+- Reconexión rápida desde el sidebar
+
+## Explorador de objetos
+
+La aplicación obtiene metadata directamente desde vistas del diccionario de datos Oracle:
+
+- Tables
+- Views
+- Procedures
+- Functions
+- Packages
+- Sequences
+- Triggers
+- Indexes
+- Tablespaces
+- Users
+
+La interfaz presenta un árbol navegable dinámico con visualización tabular usando DataTables.
+
+---
+
+# Funcionalidades principales
+
+## Ejecución de SQL
+
+Editor SQL integrado con soporte para:
+
+- `SELECT`
+- `INSERT`
+- `UPDATE`
+- `DELETE`
+- `CREATE`
+- `ALTER`
+- `DROP`
+- Scripts SQL múltiples
+
+### Características
+
+- Ejecución de múltiples sentencias en una sola petición
+- Resultados tabulares dinámicos
+- Detección automática entre SELECT y DDL/DML
+- `autoCommit` automático para DDL/DML
+- Atajo `Ctrl + Enter` para ejecutar consultas
+
+---
+
+## Generación de DDL
+
+El proyecto reconstruye manualmente el DDL de los objetos utilizando metadata obtenida desde las system tables/views de Oracle.
+
+### No se utiliza:
+
+- `information_schema`
+- `DBMS_METADATA.GET_DDL`
+- frameworks ORM
+- librerías administrativas externas
+
+El DDL es construido completamente desde el backend utilizando JavaScript y consultas SQL.
+
+### Objetos soportados
+
+- Tables
+- Views
+- Procedures
+- Functions
+- Packages
+- Triggers
+- Indexes
+- Sequences
+
+---
+
+## Creación visual de objetos
+
+### Creación de tablas
+
+Incluye interfaz visual para:
+
+- Definir columnas
+- Tipos de datos Oracle
+- Primary Keys
+- NOT NULL
+- DEFAULT values
+- Precision y Scale para NUMBER
+
+También incluye previsualización automática del SQL generado.
+
+### Creación de vistas
+
+- `CREATE VIEW`
+- `CREATE OR REPLACE VIEW`
+- Previsualización del SQL generado
+- Ejecución directa desde la interfaz
+
+---
+
+# Tecnologías utilizadas
 
 - Node.js
 - Express.js
 - Oracle Database XE
-- HTML / CSS / JavaScript
+- HTML5
+- CSS3
+- JavaScript
 - node-oracledb v6
-- DataTables (visualizacion de resultados)
+- DataTables
+- localStorage API
 
-## Requisitos
+---
 
-- Node.js >= 18
-- Oracle Database XE o superior
-- Oracle Instant Client (si aplica segun el sistema operativo)
+# Arquitectura del proyecto
 
-## Instalacion
+## Backend
 
-Clonar repositorio:
+El backend fue desarrollado utilizando Express.js y OracleDB Driver (`node-oracledb`).
+
+### Responsabilidades principales
+
+- Gestión de conexiones Oracle
+- Ejecución de SQL
+- Obtención de metadata
+- Reconstrucción de DDL
+- APIs REST
+- Conversión de tipos LONG
+
+### Endpoints principales
+
+| Endpoint | Descripción |
+|---|---|
+| `/api/connect` | Validar conexión Oracle |
+| `/api/objects` | Obtener metadata de objetos |
+| `/api/sql` | Ejecutar SQL |
+| `/api/ddl` | Generar DDL |
+| `/api/create-table` | Crear tablas |
+| `/api/create-view` | Crear vistas |
+
+---
+
+## Frontend
+
+Frontend desarrollado en JavaScript vanilla.
+
+### Características
+
+- Render dinámico del sidebar
+- Modales para visualización DDL
+- SQL Editor integrado
+- Manejo dinámico del DOM
+- Event delegation
+- Persistencia local de conexiones
+
+---
+
+# System tables/views utilizadas
+
+El proyecto interactúa directamente con metadata interna de Oracle.
+
+## Importante
+
+El proyecto **NO utiliza**:
+
+- `information_schema`
+- SQLAlchemy
+- Hibernate
+- Entity Framework
+- Dapper
+- ORMs
+- herramientas administrativas Oracle
+
+Toda la metadata se obtiene mediante consultas SQL directas sobre las vistas del diccionario Oracle.
+
+| System Table/View | Uso |
+|---|---|
+| `ALL_TABLES` | Listar tablas |
+| `ALL_VIEWS` | Listar vistas |
+| `ALL_PROCEDURES` | Procedures, functions y packages |
+| `ALL_SEQUENCES` | Secuencias |
+| `ALL_TRIGGERS` | Triggers |
+| `ALL_INDEXES` | Índices |
+| `ALL_TAB_COLUMNS` | Columnas |
+| `ALL_CONSTRAINTS` | Constraints |
+| `ALL_CONS_COLUMNS` | Columnas de constraints |
+| `ALL_IND_COLUMNS` | Columnas de índices |
+| `ALL_SOURCE` | Código fuente PL/SQL |
+| `DBA_TABLESPACES` | Tablespaces |
+| `DBA_USERS` | Usuarios |
+
+---
+
+# Problemas técnicos y soluciones implementadas
+
+## Manejo de múltiples conexiones
+
+Uno de los principales problemas del proyecto fue almacenar múltiples conexiones Oracle desde la interfaz web.
+
+### Problema
+
+La aplicación necesitaba:
+
+- almacenar varias conexiones
+- permitir reconexión rápida
+- mantener estado de conexión activo
+
+### Solución
+
+Se implementó persistencia utilizando `localStorage`.
+
+Cada conexión guarda:
+
+- host
+- puerto
+- servicio
+- usuario
+- contraseña
+
+Esto permitió:
+
+- restaurar conexiones rápidamente
+- manejar múltiples instancias Oracle
+- simplificar el flujo de autenticación
+
+---
+
+## Problemas con tipos LONG en Oracle
+
+Oracle utiliza el tipo de dato `LONG` en varias system tables importantes.
+
+### Columnas afectadas
+
+| Vista | Columna LONG |
+|---|---|
+| `ALL_TAB_COLUMNS` | `DATA_DEFAULT` |
+| `ALL_VIEWS` | `TEXT` |
+| `ALL_TRIGGERS` | `TRIGGER_BODY` |
+| `ALL_CONSTRAINTS` | `SEARCH_CONDITION` |
+
+### Problema
+
+Oracle genera errores como:
+
+```sql
+ORA-00997: illegal use of LONG datatype
+```
+
+cuando estas columnas son utilizadas incorrectamente.
+
+### Solución implementada
+
+Se utilizó `fetchTypeHandler` de `node-oracledb v6` para convertir automáticamente:
+
+```js
+DB_TYPE_LONG -> DB_TYPE_VARCHAR
+```
+
+durante la lectura de resultados.
+
+### Implementación utilizada
+
+```js
+function long_opts(long_columns) {
+    return {
+        outFormat: oracledb.OUT_FORMAT_OBJECT,
+        fetchTypeHandler: (meta) => {
+            if (long_columns.includes(meta.name)) {
+                return { type: oracledb.DB_TYPE_VARCHAR };
+            }
+        }
+    };
+}
+```
+
+Esto permitió generar correctamente:
+
+- DDL de tablas
+- DDL de vistas
+- cuerpos de triggers
+- constraints CHECK
+
+---
+
+## Reconstrucción manual de DDL
+
+Otro reto importante fue reconstruir el DDL completo de objetos Oracle utilizando únicamente metadata.
+
+### Ejemplo: CREATE TABLE
+
+Para generar tablas se combinó información desde:
+
+- `ALL_TAB_COLUMNS`
+- `ALL_CONSTRAINTS`
+- `ALL_CONS_COLUMNS`
+
+El backend reconstruye programáticamente:
+
+- columnas
+- tipos de datos
+- precision y scale
+- default values
+- NOT NULL
+- PRIMARY KEY
+- UNIQUE
+- FOREIGN KEY
+- CHECK constraints
+
+Todo el DDL es generado manualmente en Node.js.
+
+---
+
+# Instalación
+
+## Clonar repositorio
 
 ```bash
 git clone https://github.com/Omy89/Oracle-Database-Manager.git
 ```
 
-Instalar dependencias:
+## Instalar dependencias
 
 ```bash
 npm install
 ```
 
-## Configuracion
+---
 
-Crear archivo `.env` en la raiz del proyecto:
+# Configuración
+
+Crear archivo `.env`:
 
 ```env
 PORT=3000
 ```
 
-Las credenciales de conexion se ingresan directamente desde la interfaz, no se almacenan en `.env`.
+Las credenciales Oracle se ingresan desde la interfaz web y no se almacenan en el backend.
 
-## Ejecutar proyecto
+---
+
+# Ejecución
+
+## Producción
 
 ```bash
 npm start
 ```
 
-o en modo desarrollo con recarga automatica:
+## Desarrollo
 
 ```bash
 npm run dev
 ```
 
-## System tables utilizadas
+---
 
-El proyecto interactua directamente con las siguientes system tables/views de Oracle.
-No se utiliza `information_schema` ni ningun esquema estandarizado externo.
+# Requisitos
 
-| System Table / View  | Uso                                              |
-|----------------------|--------------------------------------------------|
-| ALL_TABLES           | Listar tablas accesibles por el usuario          |
-| ALL_VIEWS            | Listar vistas y obtener su texto (TEXT)          |
-| ALL_PROCEDURES       | Listar procedimientos, funciones y paquetes      |
-| ALL_SEQUENCES        | Listar secuencias y sus parametros               |
-| ALL_TRIGGERS         | Listar triggers y obtener su cuerpo              |
-| ALL_INDEXES          | Listar indices y sus columnas                    |
-| ALL_TAB_COLUMNS      | Obtener columnas de tablas para generar DDL      |
-| ALL_CONSTRAINTS      | Obtener constraints (PK, UK, FK, CHECK)          |
-| ALL_CONS_COLUMNS     | Obtener columnas de cada constraint              |
-| ALL_IND_COLUMNS      | Obtener columnas de cada indice                  |
-| ALL_SOURCE           | Obtener codigo fuente de procedures y funciones  |
-| DBA_TABLESPACES      | Listar tablespaces (requiere privilegio DBA)     |
-| DBA_USERS            | Listar usuarios (requiere privilegio DBA)        |
+- Node.js >= 18
+- Oracle Database XE o superior
+- Oracle Instant Client (dependiendo del sistema operativo)
 
-## Generacion de DDL
+---
 
-El DDL de cada objeto se reconstruye manualmente desde las system tables anteriores.
-**No se utiliza DBMS_METADATA ni ninguna funcion de administracion de Oracle.**
+# Privilegios requeridos
 
-Ejemplo para tablas: se consultan `ALL_TAB_COLUMNS` para las columnas,
-`ALL_CONSTRAINTS` + `ALL_CONS_COLUMNS` para los constraints,
-y se construye el `CREATE TABLE` programaticamente en el backend (Node.js).
+Algunas vistas requieren privilegios DBA:
+
+| Vista | Privilegio requerido |
+|---|---|
+| `DBA_USERS` | DBA o `SELECT_CATALOG_ROLE` |
+| `DBA_TABLESPACES` | DBA o `SELECT_CATALOG_ROLE` |
+
+Sin estos privilegios, dichas secciones aparecerán vacías.
+
+---
+
+# Seguridad y limitaciones
+
+## Conexiones almacenadas
+
+Las conexiones se almacenan en `localStorage`, incluyendo la contraseña.
+
+Esto es aceptable para un entorno académico local, pero no es recomendable en producción.
+
+---
 
 ## Limitaciones conocidas
 
-### Tipo de dato LONG en Oracle
-Oracle almacena ciertas columnas de sus system tables como tipo `LONG`, un tipo de dato
-antiguo con restricciones importantes:
+- Oracle XE tiene limitaciones frente a versiones Enterprise
+- Algunos objetos requieren privilegios DBA
+- El proyecto depende de metadata accesible por el usuario conectado
+- El manejo de tipos `LONG` requiere conversión manual
 
-- `ALL_TAB_COLUMNS.DATA_DEFAULT` — valor por defecto de columnas
-- `ALL_VIEWS.TEXT` — cuerpo de la vista
-- `ALL_TRIGGERS.TRIGGER_BODY` — cuerpo del trigger
-- `ALL_CONSTRAINTS.SEARCH_CONDITION` — condicion de constraints CHECK
+---
 
-Estas columnas **no pueden usarse en funciones SQL, GROUP BY, ni expresiones**.
-La solucion implementada es usar `fetchTypeHandler` de node-oracledb v6,
-que convierte `DB_TYPE_LONG` a `DB_TYPE_VARCHAR` en el momento de lectura,
-evitando el error `ORA-00997: illegal use of LONG datatype`.
+# Cumplimiento de requisitos del proyecto
 
-Adicionalmente, `SEARCH_CONDITION` no puede combinarse con `LISTAGG` en la misma query,
-por lo que los constraints CHECK se consultan en una query separada.
+## Requisitos cumplidos
 
-### Privilegios requeridos
-- `DBA_TABLESPACES` y `DBA_USERS` requieren privilegios DBA o `SELECT_CATALOG_ROLE`.
-- Sin esos privilegios, las secciones de Tablespaces y Users no mostraran datos.
+- Gestión de múltiples conexiones
+- Inicio de sesión Oracle
+- Exploración de objetos
+- Generación de DDL desde metadata
+- Creación visual de tablas y vistas
+- Ejecución de SQL
+- Uso explícito de system tables
+- Aplicación web
+- Sin uso de `information_schema`
+- Sin ORMs o frameworks prohibidos
 
-### Conexiones guardadas
-Las conexiones se almacenan en `localStorage` del navegador, incluyendo la contrasena.
-Esto es aceptable para un entorno academico local, pero no es recomendable en produccion.
+---
 
-### Soporte de objetos
-Todos los tipos de objetos indicados en la rubrica aplican para Oracle XE.
-No hay objetos que deban justificarse como no aplicables.
+# Autor
 
-## Autor
+**Omar Romero Mejía**
 
-Omar Romero Mejia
+Proyecto académico — Teoría de Base de Datos II
 
-## Licencia
+---
 
-Proyecto academico — Teoria de Base de Datos II
+# Licencia
+
+Uso académico.

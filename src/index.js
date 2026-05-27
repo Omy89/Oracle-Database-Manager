@@ -205,7 +205,7 @@ app.post('/api/ddl', async (req, res) => {
                             ac.R_OWNER, ac.R_CONSTRAINT_NAME,
                             LISTAGG(acc.COLUMN_NAME, ', ') WITHIN GROUP (ORDER BY acc.POSITION) AS COLUMNS
                      FROM ALL_CONSTRAINTS ac
-                         JOIN ALL_CONS_COLUMNS acc
+                     INNER JOIN ALL_CONS_COLUMNS acc
                      ON ac.CONSTRAINT_NAME = acc.CONSTRAINT_NAME AND ac.OWNER = acc.OWNER
                      WHERE ac.TABLE_NAME = :name AND ac.OWNER = :owner
                        AND ac.CONSTRAINT_TYPE IN ('P','U','R')
@@ -307,7 +307,7 @@ ${t.TRIGGER_BODY}
                     `SELECT ai.INDEX_TYPE, ai.UNIQUENESS, ai.TABLE_OWNER, ai.TABLE_NAME,
                             LISTAGG(aic.COLUMN_NAME, ', ') WITHIN GROUP (ORDER BY aic.COLUMN_POSITION) AS COLUMNS
                      FROM ALL_INDEXES ai
-                         JOIN ALL_IND_COLUMNS aic
+                     INNER JOIN ALL_IND_COLUMNS aic
                      ON ai.INDEX_NAME = aic.INDEX_NAME AND ai.OWNER = aic.INDEX_OWNER
                      WHERE ai.INDEX_NAME = :name AND ai.OWNER = :owner
                      GROUP BY ai.INDEX_TYPE, ai.UNIQUENESS, ai.TABLE_OWNER, ai.TABLE_NAME`,
